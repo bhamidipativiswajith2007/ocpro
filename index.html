@@ -169,7 +169,7 @@ async function fetchUsers() {
     const url = `https://api.github.com/search/users?q=${encodeURIComponent(currentQuery)}&page=${currentPage}&per_page=${perPage}`;
 
  let num=`https://api.github.com/search/users?q=${encodeURIComponent(currentQuery)}`
-fetch(url)
+fetch(num)
 .then((response)=>{
 return response.json()
 }).then((data)=>{
@@ -240,6 +240,7 @@ function prevPage() {
 
 </body>
 </html>
+
 
 
 
