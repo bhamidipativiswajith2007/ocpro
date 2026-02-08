@@ -1,5 +1,7 @@
 <!--U NEED TO ADD DEBOUNCE SEARCH ,NEAT CSS,SEPARATE THEM INTO 3 FILES ,KNOW ABOUT GITHUB API RATE LIMITING-->
 
+<!--NEED TO KNOW ABOUT QUERY PARAMETERS...WHEN WE WRITE URL INSIDE THE FETCH ..THERE ARE SOME QUERY PARAMETERS..THAT ARE USED TO WHAT INFOEMATION DO WE NEED--->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +10,7 @@
 <title>GitHub User Search Dashboard</title>
 
 <style>
-/* ===== RESET ===== */
+
 * {
   box-sizing: border-box;
   font-family: Arial, sans-serif;
@@ -20,7 +22,7 @@ body {
   margin: 0;
 }
 
-/* ===== HEADER ===== */
+
 header {
   background: #020617;
   padding: 15px;
@@ -54,13 +56,13 @@ button:hover {
   background: #0ea5e9;
 }
 
-/* ===== STATUS ===== */
+
 #status {
   text-align: center;
   margin-top: 10px;
 }
 
-/* ===== USERS GRID ===== */
+
 #users {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -68,7 +70,7 @@ button:hover {
   padding: 20px;
 }
 
-/* ===== CARD ===== */
+
 .card {
   background: #020617;
   padding: 15px;
@@ -88,7 +90,7 @@ button:hover {
   margin-top: 5px;
 }
 
-/* ===== PAGINATION ===== */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -96,7 +98,7 @@ button:hover {
   margin-bottom: 20px;
 }
 
-/* ===== MOBILE ===== */
+ 
 @media(max-width:500px) {
   input {
     width: 180px;
@@ -169,7 +171,7 @@ async function fetchUsers() {
     const response = await fetch(url, {
       headers: {
         "User-Agent": "Mozilla/5.0"
-      }
+      }//i think header is not that mandatory here ..beacuse when we send the reuest ...the browser on default sends the useragent..or who is the useragent ..so we dont need to explicitly ..define
     });
 
     if (!response.ok) {
@@ -229,4 +231,5 @@ function prevPage() {
 
 </body>
 </html>
+
 
