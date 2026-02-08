@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub User Search Dashboard</title>
+
+<style>
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: white;
+  margin: 0;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: #020617;
+  padding: 15px;
+  text-align: center;
+}
+
+/* ===== SEARCH ===== */
+.search-box {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px;
+}
+
+input {
+  width: 250px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  padding: 10px 15px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0ea5e9;
+}
+
+/* ===== STATUS ===== */
+#status {
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* ===== USERS GRID ===== */
+#users {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: #020617;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.card img {
+  width: 80px;
+  border-radius: 50%;
+}
+
+.card a {
+  color: #38bdf8;
+  text-decoration: none;
+  display: block;
+  margin-top: 5px;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:500px) {
+  input {
+    width: 180px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>GitHub User Search Dashboard</h2>
+</header>
+
+<div class="search-box">
+  <form id="form">
+  <input id="searchInput" placeholder="Search GitHub users">
+  <button type="submit">Search</button>
+  </form>
+</div>
+
+<p id="status"></p>
+
+<div id="users"></div>
+
+<div class="pagination">
+  <button onclick="prevPage()">Prev</button>
+  <span id="pageNum">1</span>
+  <button onclick="nextPage()">Next</button>
+</div>
+
+<script>
+// let input = document.getElementById("searchInput");
+// input.addEventListener("keyup",function(e){
+//   if(e.key === "Enter"){
+//     startSearch();
+//   }
+// })
+document.getElementById("form").addEventListener("submit",(e)=>{
+ e.preventDefault();
+ startSearch();
+})
+
+
+let currentPage = 1;
+let perPage = 12;
+let currentQuery = "";
+
+// Start Search
+function startSearch() {
+  currentQuery = document.getElementById("searchInput").value;
+
+  if (currentQuery.trim() === "") {
+    alert("Enter a username");
+    return;
+  }
+
+  currentPage = 1;
+  fetchUsers();
+}
+
+// Fetch Users
+async function fetchUsers() {
+  const status = document.getElementById("status");
+  status.innerText = "Loading...";
+
+  try {
+    const url = `https://api.github.com/search/users?q=${encodeURIComponent(currentQuery)}&page=${currentPage}&per_page=${perPage}`;
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("API Error");
+    }
+
+    const data = await response.json();
+    displayUsers(data.items);
+
+    status.innerText = "";
+    document.getElementById("pageNum").innerText = currentPage;
+
+  } catch (error) {
+    console.error(error);
+    status.innerText = "Something went wrong!";
+  }
+}
+
+// Display Users
+function displayUsers(users) {
+  const container = document.getElementById("users");
+  container.innerHTML = "";
+
+  if (users.length === 0) {
+    container.innerHTML = "<p>No users found</p>";
+    return;
+  }
+
+  users.forEach(user => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img src="${user.avatar_url}">
+      <h3>${user.login}</h3>
+      <a href="${user.html_url}" target="_blank">View Profile</a>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Next Page
+function nextPage() {
+  currentPage++;
+  fetchUsers();
+}
+
+// Prev Page
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    fetchUsers();
+  }
+}
+</script>
+
+</body>
+</html>
